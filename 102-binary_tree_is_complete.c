@@ -89,6 +89,39 @@ binary_tree_t *dequeue(queue_t *queue)
 }
 
 /**
+ * complete_checker - Checks if a binary tree is complete
+ * @queue: Pointer to queue
+ *
+ * Return: 1 if complete, 0 otherwise
+ */
+
+static int complete_checker(queue_t *queue)
+{
+	const binary_tree_t *temp;
+	int leaf_node_flag;
+
+	leaf_node_flag = 0;
+	while (queue->front != NULL)
+	{
+		temp = dequeue(queue);
+		if (temp == NULL)
+			continue;
+		if (temp->right && !temp->left)
+			return (0);
+		if (leaf_node_flag && (temp->left || temp->right))
+			return (0);
+		if (!temp->left || !temp->right)
+			leaf_node_flag = 1;
+		if (temp->left && enqueue(queue, temp->left) == -1)
+			return (0);
+		if (temp->right && enqueue(queue, temp->right) == -1)
+			return (0);
+	}
+
+	return (1);
+}
+
+/**
  * binary_tree_is_complete - Checks if a binary tree is complete
  * @tree: Pointer to the root node of the tree to check
  *
@@ -98,12 +131,8 @@ binary_tree_t *dequeue(queue_t *queue)
 int binary_tree_is_complete(const binary_tree_t *tree)
 {
 	queue_t *queue;
-	const binary_tree_t *temp;
-	int leaf_node_flag;
+	int complete_status;
 
-	leaf_node_flag = 0;
-	if (tree == NULL)
-		return (0);
 	queue = create_queue();
 	if (queue == NULL)
 		return (0);
@@ -112,46 +141,11 @@ int binary_tree_is_complete(const binary_tree_t *tree)
 		free(queue);
 		return (0);
 	}
+	complete_status = complete_checker(queue);
 
-	while (queue->front != NULL)
-	{
-		temp = dequeue(queue);
-		if (temp == NULL)
-			continue;
-		if (temp->right && !temp->left)
-		{
-			while (queue->front != NULL)
-				dequeue(queue);
-			free(queue);
-			return (0);
-		}
-		if (leaf_node_flag && (temp->left || temp->right))
-		{
-			while (queue->front != NULL)
-				dequeue(queue);
-			free(queue);
-			return (0);
-		}
-		if (!temp->left || !temp->right)
-			leaf_node_flag = 1;
-		if (temp->left && enqueue(queue, temp->left) == -1)
-		{
-			while (queue->front != NULL)
-				dequeue(queue);
-			free(queue);
-			return (0);
-		}
-		if (temp->right && enqueue(queue, temp->right) == -1)
-		{
-			while (queue->front != NULL)
-				dequeue(queue);
-			free(queue);
-			return (0);
-		}
-	}
 	while (queue->front != NULL)
 		dequeue(queue);
 	free(queue);
 
-	return (1);
+	return (complete_status);
 }
