@@ -27,6 +27,31 @@ typedef struct binary_tree_s bst_t;
 typedef struct binary_tree_s avl_t;
 typedef struct binary_tree_s heap_t;
 
+/* structs for level order trasversal implementation */
+
+/**
+ * struct q_node -  Structure for node for queue
+ *
+ * @node: Pointer to binary tree node
+ * @next: Pointer to next node in queue
+ */
+typedef struct q_node
+{
+	const binary_tree_t *node;
+	struct q_node *next;
+} q_node_t;
+
+/**
+ * struct queue_s - Queue structure
+ *
+ * @front: Pointer to front of queue
+ * @back: Pointer to back of queue
+ */
+typedef struct queue_s
+{
+	q_node_t *front;
+	q_node_t *back;
+} queue_t;
 
 /* Binary Tree Functions */
 void binary_tree_print(const binary_tree_t *);
