@@ -105,21 +105,30 @@ int binary_tree_is_complete(const binary_tree_t *tree)
 	complete_status = 1;
 	queue = create_queue();
 	if (!tree || !queue || enqueue(queue, tree) == -1)
+	{
+		free(queue);
 		return (0);
+	}
 	while (queue->front != NULL)
 	{
 		temp = dequeue(queue);
 		if (temp->left)
 		{
 			if (leaf_node_flag || enqueue(queue, temp->left) == -1)
-				return (free(queue), 0);
+			{
+				free(queue);
+				return (0);
+			}
 		}
 		else
 			leaf_node_flag = 1;
 		if (temp->right)
 		{
 			if (leaf_node_flag || enqueue(queue, temp->right) == -1)
-				return (free(queue), 0);
+			{
+				free(queue);
+				return (0);
+			}
 		}
 		else
 			leaf_node_flag = 1;
